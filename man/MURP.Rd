@@ -9,9 +9,8 @@ MURP(Data, cores = 1, iter = 20, omega = 1/6, seed = 723)
 \arguments{
 \item{Data}{expression matrix with Cells * Genes}
 
-\item{cores}{the number of cores to use in multi-threads calculating,
-default is 1. I do not recommend using multi-threaded calculations on
-a local computer, but if you have server support, you can try.}
+\item{cores}{the number of cores to use in multi-threads calculating, default is 1.
+Multi-threaded calculation is not recommended except for users with server support}
 
 \item{iter}{the number of iterations}
 

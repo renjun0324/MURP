@@ -1,4 +1,7 @@
 #' MURP.Kmeans
+#' @importFrom parallel makeCluster stopCluster clusterExport parLapply
+#' @importFrom NPflow mvnpdfC
+#'
 #' @export
 #' @noRd
 #'
@@ -44,10 +47,13 @@ MURP.Kmeans <- function(Data,
     cat('Step:',step,'  k:',min_k,'\n')
     cat(K_series,'\n')
 
-    cls <- pbmclapply(K_series, function(Centers){
+    cl <- makeCluster(cores)
+    clusterExport(cl, c("seed", "Data", "K_series"), envir = environment())
+    cls <- parLapply(cl, K_series, function(Centers){
       set.seed(seed)
-      kmeans(Data, centers = Centers)
-    }, mc.cores = cores)
+      kmeans(Data, centers = Centers, iter.max = 1000)
+    })
+    stopCluster(cl)
 
     gc()
 
@@ -56,14 +62,14 @@ MURP.Kmeans <- function(Data,
     }
 
     K_series_len <- length(K_series)
-    Loglike_iter <-  unlist(pbmclapply(1:K_series_len,
-                                     function(l){LogLikly(Data = Data,
-                                                          centers = cls[[l]]$centers,
-                                                          cluster = cls[[l]]$cluster,
-                                                          K = K_series[l],
-                                                          seed = seed,
-                                                          cores = ifelse(cores>=3, round(cores/3), cores) ) },
-                                     mc.cores = cores))
+    Loglike_iter <-  unlist(pblapply(1:K_series_len,
+                                   function(l){LogLikly(Data = Data,
+                                                        centers = cls[[l]]$centers,
+                                                        cluster = cls[[l]]$cluster,
+                                                        K = K_series[l],
+                                                        cores = cores ) }))
+
+
     a <- 1 + 1e-9
     gamma <- sqrt(a * K_series * K_series * log(GeneNum))
     penalty <- (6 * omega) * (1 + gamma) * log(GeneNum) * K_series
@@ -106,14 +112,18 @@ MURP.Kmeans <- function(Data,
 }
 
 #' BicSpan.Kmeans
+#'
+#' @importFrom parallel makeCluster stopCluster clusterExport parLapply
+#' @importFrom NPflow mvnpdfC
+#'
 #' @export
 #' @noRd
 #'
 murp_specific_Kmeans <- function(Data,
-                           cores = 1,
-                           K = NULL,
-                           omega = 1/50,
-                           seed = 723){
+                                 cores = 1,
+                                 K = NULL,
+                                 omega = 1/50,
+                                 seed = 723){
 
   cat('Initiating ...        ',date(),'\n')
 
@@ -130,9 +140,8 @@ murp_specific_Kmeans <- function(Data,
   Loglike_iter <-  LogLikly(Data = Data,
                             centers = cls$centers,
                             cluster = cls$cluster,
-                            seed = seed,
                             K = K,
-                            cores = ifelse(cores>=3, round(cores/3), cores) )
+                            cores = cores )
 
   gamma <- sqrt(a * K * K * log(GeneNum))
   penalty <- (6 * omega) * (1 + gamma) * log(GeneNum) * K

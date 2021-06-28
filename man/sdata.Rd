@@ -5,7 +5,7 @@
 \alias{sdata}
 \title{sdata}
 \format{
-An object of class \code{matrix} with 374 rows and 2000 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 374 rows and 2000 columns.
 }
 \usage{
 data(sdata)

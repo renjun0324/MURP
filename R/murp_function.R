@@ -11,9 +11,9 @@
 #' @param sigma2: the coariance matrix of the multivariate gaussian distribution
 #' @param cores: the number of threads
 #'
-#' @importFrom parallel mclapply
-#' @importFrom pbmcapply pbmclapply
-#' @importFrom mvnfast dmvn
+#' @importFrom pbapply pblapply
+#' @importFrom NPflow mvnpdfC
+#' @importFrom parallel makeCluster stopCluster clusterExport parLapply
 #' @import grDevices
 #'
 #' @noRd
@@ -22,17 +22,13 @@ LogLikly <- function(Data = NULL,
                      centers = NULL,
                      cluster = NULL,
                      K = NULL,
-                     seed = NULL,
                      cores = 1) {
-  # K <- K_series[i]
-  # cl <- cls[[i]]
 
   CellNum = nrow(Data)
   GeneNum = ncol(Data)
 
   Yt_filt <- centers[cluster, ] #Replace all points with all current center stores
   Yt_res <- Data - Yt_filt
-  #Yt_res <- MaxIfMatrix(Yt_res)
 
   SStot <- (Data - t(colMeans(Data) %*% matrix(1, 1, CellNum))) ^ 2
   SSpam <- (Yt_filt - t(colMeans(Data) %*% matrix(1, 1, CellNum))) ^ 2
@@ -40,17 +36,22 @@ LogLikly <- function(Data = NULL,
 
   SSres <- MaxIfVector(SSres)
   sigma2res <- SSres / (CellNum - K)
-  #sigma2res[which(sigma2res<0)] <- 1e-32
 
-  LL <- pbmclapply(1:GeneNum,
-                 function(g) {
-                   set.seed(seed)
-                   mvnfast::dmvn(Yt_res[, g], mu = rep(0, CellNum), sigma = diag(sigma2res[g], CellNum), log = TRUE)},
-                 mc.cores = cores )
+  cl <- makeCluster(cores)
+  clusterExport(cl, c("Data", "centers", "cluster", "mvnpdfC",
+                      "K", "CellNum", "GeneNum", "Yt_res"), envir = environment())
+  LL <- parLapply(cl, 1:ncol(Data), function(g){
+    yr = Yt_res[, g]
+    if(!is.matrix(yr)){
+      yr = as.matrix(yr)
+    }
+    mvnpdfC(yr, mean = rep(0, CellNum), varcovM = diag(sigma2res[g], CellNum), Log = TRUE)
+  })
+  stopCluster(cl)
+
 
   loglike <- sum(unlist(LL))
 
-  #write.table(sigma2res, file = 'var.txt')
   return(loglike)
 }
 
