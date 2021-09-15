@@ -22,10 +22,10 @@ MURP <- function(Data,
                  cores = 1,
                  iter = 20,
                  omega = 1/6,
-                 seed = 723){
+                 seed = 723,
+                 fast = FALSE){
 
-  f <- MURP.Kmeans(Data = Data, cores = cores, iter = iter, omega = omega, seed = seed)
-
+  f = MURP.Kmeans(Data = Data, cores = cores, iter = iter, omega = omega, seed = seed, fast = fast)
   return(f)
 }
 

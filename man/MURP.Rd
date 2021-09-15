@@ -4,7 +4,7 @@
 \alias{MURP}
 \title{MURP}
 \usage{
-MURP(Data, cores = 1, iter = 20, omega = 1/6, seed = 723)
+MURP(Data, cores = 1, iter = 20, omega = 1/6, seed = 723, fast = FALSE)
 }
 \arguments{
 \item{Data}{expression matrix with Cells * Genes}

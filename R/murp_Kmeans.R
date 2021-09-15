@@ -9,7 +9,8 @@ MURP.Kmeans <- function(Data,
                         cores = 1,
                         iter = 20,
                         omega = 1/50,
-                        seed = 723){
+                        seed = 723,
+                        fast = FALSE){
 
   cat('Initiating ...        ',date(),'\n')
 
@@ -62,12 +63,21 @@ MURP.Kmeans <- function(Data,
     }
 
     K_series_len <- length(K_series)
-    Loglike_iter <-  unlist(pblapply(1:K_series_len,
-                                   function(l){LogLikly(Data = Data,
-                                                        centers = cls[[l]]$centers,
-                                                        cluster = cls[[l]]$cluster,
-                                                        K = K_series[l],
-                                                        cores = cores ) }))
+    if(fast){
+      Loglike_iter <-  unlist(pblapply(1:K_series_len,
+                                       function(l){FastLogLikly(Data = Data,
+                                                                centers = cls[[l]]$centers,
+                                                                cluster = cls[[l]]$cluster,
+                                                                K = K_series[l]) }))
+    }else{
+      Loglike_iter <-  unlist(pblapply(1:K_series_len,
+                                       function(l){LogLikly(Data = Data,
+                                                            centers = cls[[l]]$centers,
+                                                            cluster = cls[[l]]$cluster,
+                                                            K = K_series[l],
+                                                            cores = cores ) }))
+    }
+
 
 
     a <- 1 + 1e-9
@@ -123,7 +133,8 @@ murp_specific_Kmeans <- function(Data,
                                  cores = 1,
                                  K = NULL,
                                  omega = 1/50,
-                                 seed = 723){
+                                 seed = 723,
+                                 fast = FALSE){
 
   cat('Initiating ...        ',date(),'\n')
 
@@ -137,11 +148,20 @@ murp_specific_Kmeans <- function(Data,
 
   set.seed(seed)
   cls <- kmeans(Data, centers = K)
-  Loglike_iter <-  LogLikly(Data = Data,
+
+  if(fast){
+    Loglike_iter = FastLogLikly(Data = Data,
+                                centers = cls$centers,
+                                cluster = cls$cluster,
+                                K = K)
+  }else{
+    Loglike_iter = LogLikly(Data = Data,
                             centers = cls$centers,
                             cluster = cls$cluster,
                             K = K,
                             cores = cores )
+  }
+
 
   gamma <- sqrt(a * K * K * log(GeneNum))
   penalty <- (6 * omega) * (1 + gamma) * log(GeneNum) * K
