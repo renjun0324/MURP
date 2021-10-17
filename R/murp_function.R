@@ -45,7 +45,9 @@ LogLikly <- function(Data = NULL,
     if(!is.matrix(yr)){
       yr = as.matrix(yr)
     }
-    mvnpdfC(yr, mean = rep(0, CellNum), varcovM = diag(sigma2res[g], CellNum), Log = TRUE)
+    sig = sigma2res[g]
+    if(sig==0){sig=1e-16}
+    mvnpdfC(yr, mean = rep(0, CellNum), varcovM = diag(sig, CellNum), Log = TRUE)
   })
   stopCluster(cl)
 
