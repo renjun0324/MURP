@@ -23,9 +23,10 @@ MURP <- function(Data,
                  iter = 20,
                  omega = 1/6,
                  seed = 723,
-                 fast = FALSE){
+                 fast = FALSE,
+                 cluster_iter_max = 1000){
 
-  f = MURP.Kmeans(Data = Data, cores = cores, iter = iter, omega = omega, seed = seed, fast = fast)
+  f = MURP.Kmeans(Data = Data, cores = cores, iter = iter, omega = omega, seed = seed, fast = fast, cluster_iter_max = cluster_iter_max)
   return(f)
 }
 
@@ -60,9 +61,11 @@ murp_specific <- function(Data = NULL,
                           cores = NULL,
                           omega = NULL,
                           K = NULL,
-                          seed = 723){
+                          seed = 723,
+                          cluster_iter_max = 1000){
 
-  f <- murp_specific_Kmeans(Data = Data, cores = cores, K = K, omega = omega, seed = seed)
+  f <- murp_specific_Kmeans(Data = Data, cores = cores, K = K, omega = omega, seed = seed,
+                            cluster_iter_max = cluster_iter_max)
 
   return(f)
 }

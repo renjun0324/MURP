@@ -10,7 +10,8 @@ MURP.Kmeans <- function(Data,
                         iter = 20,
                         omega = 1/50,
                         seed = 723,
-                        fast = FALSE){
+                        fast = FALSE,
+                        cluster_iter_max = 1000){
 
   cat('Initiating ...        ',date(),'\n')
 
@@ -52,7 +53,7 @@ MURP.Kmeans <- function(Data,
     clusterExport(cl, c("seed", "Data", "K_series"), envir = environment())
     cls <- parLapply(cl, K_series, function(Centers){
       set.seed(seed)
-      kmeans(Data, centers = Centers, iter.max = 1000)
+      kmeans(Data, centers = Centers, iter.max = cluster_iter_max)
     })
     stopCluster(cl)
 
@@ -82,7 +83,12 @@ MURP.Kmeans <- function(Data,
 
     a <- 1 + 1e-9
     gamma <- sqrt(a * K_series * K_series * log(GeneNum))
-    penalty <- (6 * omega) * (1 + gamma) * log(GeneNum) * K_series
+    if(fast){
+      penalty <- (1/100 * omega) * (1 + gamma) * log(GeneNum) * K_series
+    }else{
+      penalty <- (6 * omega) * (1 + gamma) * log(GeneNum) * K_series
+    }
+
     BIC_iter <- penalty - 2 * Loglike_iter
     k <- append(k, K_series)
     Penalty <- append(Penalty, penalty)
@@ -134,7 +140,8 @@ murp_specific_Kmeans <- function(Data,
                                  K = NULL,
                                  omega = 1/50,
                                  seed = 723,
-                                 fast = FALSE){
+                                 fast = FALSE,
+                                 cluster_iter_max = 1000){
 
   cat('Initiating ...        ',date(),'\n')
 
@@ -147,7 +154,7 @@ murp_specific_Kmeans <- function(Data,
   cat('K:',K,'\n')
 
   set.seed(seed)
-  cls <- kmeans(Data, centers = K)
+  cls <- kmeans(Data, centers = K, iter.max = cluster_iter_max)
 
   if(fast){
     Loglike_iter = FastLogLikly(Data = Data,

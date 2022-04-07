@@ -11,7 +11,8 @@ murp_specific(
   cores = NULL,
   omega = NULL,
   K = NULL,
-  seed = 723
+  seed = 723,
+  cluster_iter_max = 1000
 )
 }
 \arguments{
