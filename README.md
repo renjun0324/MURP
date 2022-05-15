@@ -8,16 +8,16 @@ MURP is an ongoing research project and we will keep providing more tutorials an
 ## Introduction
 MURP is aimed to divide the cell population into homogeneous subgroups so that within each subgroup, the gene-wise variations are identically and independently distributed; whereas the between-group variations represent the relevant biological processes.
 
-<img src="figure/figure1.png" width="600">
+<div align=center><img src="figure/figure1.png" width="650"></div>
 
 We applied MURP to both simulated and real scRNA-seq datasets of different tissue origins and compared it with existing downsampling methods. The results showed that MURP can improve the quality and accuracy of clustering algorithms, and thus facilitate the discovery of new cell types.
 
 ### simulated datasets
 
-<img src="figure/figure2.png" width="600">
+<div align=center><img src="figure/figure2.png" width="650"></div>
 
 ### scRNA-seq datasets
-<img src="figure/figure4.png" width="500">
+<div align=center><img src="figure/figure4.png" width="500"></div>
 
 ## Installation
 
@@ -33,10 +33,12 @@ We recommend using the normalized expression matrix for calculations.
 data(sdata)
 result = MURP(Data = sdata, type = "expr", cores = 1, iter = 20, omega = 1/6, seed = 723)
 ggplot2::ggsave("bic_plot.png", KBicPlot(murpResult = result), width = 4, height = 4)
-ggplot2::ggsave("bic_grid_plot.png", MURPNestedGridPlot(murpResult = result), width = 4, height = 4)
+ggplot2::ggsave("bic_grid_plot.png", MURPNestedGridPlot(murpResult = result), 
+                width = 4, height = 4)
 ```
 
-<img src="figure/bic_grid_plot.png" width="350">
+<div align=center><img src="figure/bic_grid_plot.png" width="380"></div>
+
 
 ```r
 c = result$Recommended_K_cl$centers
@@ -57,11 +59,11 @@ p <- ggplot(df, aes(x = X1, y = X2, color = col)) +
         panel.grid.minor=element_blank(),
         panel.grid.major=element_blank(),
         legend.key.size = unit(0.9, "cm") )
-ggsave("umap.png", p, width = 4, height = 3)
+ggsave("umap.png", p, width = 4.5, height = 3)
 
 ```
 
-<img src="figure/umap.png" width="400">
+<div align=center><img src="figure/umap.png" width="450"></div>
 
 ## Citation
 If you use MURP, please cite:
