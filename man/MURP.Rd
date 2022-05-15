@@ -6,9 +6,9 @@
 \usage{
 MURP(
   Data,
-  cores = 1,
-  iter = 20,
   omega = 1/6,
+  iter = 20,
+  cores = 1,
   seed = 723,
   fast = FALSE,
   cluster_iter_max = 1000
@@ -17,14 +17,20 @@ MURP(
 \arguments{
 \item{Data}{expression matrix with Cells * Genes}
 
-\item{cores}{the number of cores to use in multi-threads calculating, default is 1.
-Multi-threaded calculation is not recommended except for users with server support}
+\item{omega}{omega value in pseudo-BIC calculating}
 
 \item{iter}{the number of iterations}
 
-\item{omega}{omega value in pseudo-BIC calculating}
+\item{cores}{the number of cores to use in multi-threads calculating, default is 1.
+Multi-threaded calculation is not recommended except for users with server support}
 
 \item{seed}{random seed, default is 723}
+
+\item{fast}{speed up calculations}
+
+\item{cluster_iter_max}{kmeans iterations}
+
+\item{type}{data type, "expr" or "pca"}
 }
 \value{
 a list include recommend_K, object of clustering result and so on

@@ -6,8 +6,6 @@
 \usage{
 murp_specific(
   Data = NULL,
-  h = NULL,
-  d = NULL,
   cores = NULL,
   omega = NULL,
   K = NULL,
@@ -18,10 +16,6 @@ murp_specific(
 \arguments{
 \item{Data}{expression matrix with Cells * Genes}
 
-\item{h}{hclust object of orig data, which is not needed without hierarchical clustering}
-
-\item{d}{dist matrix of orig data}
-
 \item{cores}{the number of cores to use in multi-threads calculating,
 default is 1. I do not recommend using multi-threaded calculations on
 a local computer, but if you have server support, you can try.}
@@ -31,6 +25,8 @@ a local computer, but if you have server support, you can try.}
 \item{K}{the number of specified clusters}
 
 \item{seed}{random seed, default is 723}
+
+\item{cluster_iter_max}{kmeans iterations}
 }
 \value{
 a list include recommend_K, object of clustering result and so on

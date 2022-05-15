@@ -7,11 +7,14 @@
 #' Recommended_K: Recommended K value.
 #'
 #' @param Data expression matrix with Cells * Genes
+#' @param type data type, "expr" or "pca"
 #' @param omega omega value in pseudo-BIC calculating
 #' @param iter the number of iterations
 #' @param cores the number of cores to use in multi-threads calculating, default is 1.
 #' Multi-threaded calculation is not recommended except for users with server support
 #' @param seed random seed, default is 723
+#' @param fast speed up calculations
+#' @param cluster_iter_max kmeans iterations
 #'
 #' @return a list include recommend_K, object of clustering result and so on
 #'
@@ -19,9 +22,9 @@
 #'
 
 MURP <- function(Data,
-                 cores = 1,
-                 iter = 20,
                  omega = 1/6,
+                 iter = 20,
+                 cores = 1,
                  seed = 723,
                  fast = FALSE,
                  cluster_iter_max = 1000){
@@ -40,13 +43,12 @@ MURP <- function(Data,
 #'
 #' @param Data expression matrix with Cells * Genes
 #' @param omega omega value in pseudo-BIC calculating
-#' @param h hclust object of orig data, which is not needed without hierarchical clustering
-#' @param d dist matrix of orig data
 #' @param K the number of specified clusters
 #' @param cores the number of cores to use in multi-threads calculating,
 #' default is 1. I do not recommend using multi-threaded calculations on
 #' a local computer, but if you have server support, you can try.
 #' @param seed random seed, default is 723
+#' @param cluster_iter_max kmeans iterations
 #'
 #' @importFrom graphics abline plot
 #' @importFrom stats dbeta kmeans median quantile sd var
@@ -56,8 +58,6 @@ MURP <- function(Data,
 #' @export
 #'
 murp_specific <- function(Data = NULL,
-                          h = NULL,
-                          d = NULL,
                           cores = NULL,
                           omega = NULL,
                           K = NULL,

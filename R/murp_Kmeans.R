@@ -79,8 +79,6 @@ MURP.Kmeans <- function(Data,
                                                             cores = cores ) }))
     }
 
-
-
     a <- 1 + 1e-9
     gamma <- sqrt(a * K_series * K_series * log(GeneNum))
     if(fast){

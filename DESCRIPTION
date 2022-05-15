@@ -1,10 +1,10 @@
 Package: MURP
 Title: MURP (One Line, Title Case)
-Version: 0.3.7
-Date: 2021-10-3
+Version: 0.4.1
+Date: 2022-5-15
 Authors@R: person(family = "RenJun",
            role = c("aut", "cre"),
-           email = "renjun@stu.xmu.edu.cn")
+           email = "renjun0324@hotmail.com")
 Description: This package implements the MURP downsampling algorithm for scRNA-seq data.
 Depends:
     R (>= 3.5.0),

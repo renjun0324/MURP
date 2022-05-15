@@ -4,13 +4,6 @@
 #' multi-threads likelyhood function for multivariate distribution.
 #' (Prior probability)
 #'
-#' @param GeneNum: gene number
-#' @param CellNum: cell number
-#' @param K: the number of clusters
-#' @param Res: the residual of cells and center in each cluster
-#' @param sigma2: the coariance matrix of the multivariate gaussian distribution
-#' @param cores: the number of threads
-#'
 #' @importFrom pbapply pblapply
 #' @importFrom NPflow mvnpdfC
 #' @importFrom parallel makeCluster stopCluster clusterExport parLapply
@@ -63,13 +56,6 @@ LogLikly <- function(Data = NULL,
 #' @description
 #' multi-threads likelyhood function for multivariate distribution.
 #' (Prior probability)
-#'
-#' @param GeneNum: gene number
-#' @param CellNum: cell number
-#' @param K: the number of clusters
-#' @param Res: the residual of cells and center in each cluster
-#' @param sigma2: the coariance matrix of the multivariate gaussian distribution
-#' @param cores: the number of threads
 #'
 #' @importFrom pbapply pblapply
 #' @importFrom NPflow mvnpdfC
