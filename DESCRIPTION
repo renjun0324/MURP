@@ -1,7 +1,7 @@
 Package: MURP
 Title: MURP (One Line, Title Case)
-Version: 0.4.1
-Date: 2022-5-15
+Version: 0.5
+Date: 2022-11-14
 Authors@R: person(family = "RenJun",
            role = c("aut", "cre"),
            email = "renjun0324@hotmail.com")

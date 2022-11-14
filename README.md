@@ -31,7 +31,7 @@ We recommend using the normalized expression matrix for calculations.
 
 ```r
 data(sdata)
-result = MURP(Data = sdata, type = "expr", cores = 1, iter = 20, omega = 1/6, seed = 723)
+result = MURP(Data = sdata, cores = 1, iter = 20, omega = 1/6, seed = 723)
 ggplot2::ggsave("bic_plot.png", KBicPlot(murpResult = result), width = 4, height = 4)
 ggplot2::ggsave("bic_grid_plot.png", MURPNestedGridPlot(murpResult = result), 
                 width = 4, height = 4)

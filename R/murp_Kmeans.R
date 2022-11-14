@@ -94,15 +94,11 @@ MURP.Kmeans <- function(Data,
     BIC <- append(BIC, BIC_iter)
     Step <- append(Step, step)
 
-    #clsSave[[dim(cls[[1]]$centers)[1]]] <- cls[[1]]
-    gc()
-
     if ((min_k - step < 1 || min_k + step > CellNum - 1)) {
       break
     }
   }
 
-  gc()
   Recommended_K <- k[which(BIC == min(BIC))[1]]
 
   command <- paste('Data =',dim(Data)[1],'*',dim(Data)[2],
