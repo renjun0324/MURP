@@ -29,7 +29,13 @@ MURP <- function(Data,
                  fast = FALSE,
                  cluster_iter_max = 1000){
 
-  f = MURP.Kmeans(Data = Data, cores = cores, iter = iter, omega = omega, seed = seed, fast = fast, cluster_iter_max = cluster_iter_max)
+  f = MURP.Kmeans(Data = Data,
+                  cores = cores,
+                  iter = iter,
+                  omega = omega,
+                  seed = seed,
+                  fast = fast,
+                  cluster_iter_max = cluster_iter_max)
   return(f)
 }
 
@@ -71,7 +77,46 @@ murp_specific <- function(Data = NULL,
 }
 
 
+#' MURP
+#'
+#' @description
+#' This new method is optimized from the MURP algorithm, it's more efficient.
+#' Loglike: Prior probability estimated by likelyhood function;
+#' MURP: Bayesian Information Criterions value;
+#' Recommended_K: Recommended K value.
+#'
+#' @param Data expression matrix with Cells * Genes
+#' @param type data type, "expr" or "pca"
+#' @param omega omega value in pseudo-BIC calculating
+#' @param iter the number of iterations
+#' @param cores the number of cores to use in multi-threads calculating, default is 1.
+#' Multi-threaded calculation is not recommended except for users with server support
+#' @param seed random seed, default is 723
+#' @param fast speed up calculations
+#' @param cluster_iter_max kmeans iterations
+#'
+#' @return a list include recommend_K, object of clustering result and so on
+#'
+#' @export
+#'
 
+MURP <- function(Data,
+                 omega = 1/6,
+                 iter = 20,
+                 cores = 1,
+                 seed = 723,
+                 fast = FALSE,
+                 cluster_iter_max = 1000){
+
+  f = MURP.Kmeans(Data = Data,
+                  cores = cores,
+                  iter = iter,
+                  omega = omega,
+                  seed = seed,
+                  fast = fast,
+                  cluster_iter_max = cluster_iter_max)
+  return(f)
+}
 
 
 

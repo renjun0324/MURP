@@ -1,7 +1,7 @@
 Package: MURP
 Title: MURP (One Line, Title Case)
-Version: 0.5
-Date: 2022-11-14
+Version: 0.6.3
+Date: 2023-1-7
 Authors@R: person(family = "RenJun",
            role = c("aut", "cre"),
            email = "renjun0324@hotmail.com")
@@ -10,7 +10,8 @@ Depends:
     R (>= 3.5.0),
     NPflow,
     cluster,
-    parallel
+    parallel,
+    irlba
 Imports:
     stats,
     cluster,
@@ -23,3 +24,4 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+
