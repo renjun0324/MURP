@@ -1,3 +1,5 @@
+
+
 #' MURP.Kmeans
 #' @importFrom parallel makeCluster stopCluster clusterExport parLapply
 #' @importFrom NPflow mvnpdfC
@@ -11,7 +13,8 @@ MURP.Kmeans <- function(Data,
                         omega = 1/50,
                         seed = 723,
                         fast = FALSE,
-                        cluster_iter_max = 1000){
+                        cluster_iter_max = 1000,
+                        max_murp = round(nrow(Data)*0.2) ){
 
   cat('Initiating ...        ',date(),'\n')
 
@@ -26,11 +29,10 @@ MURP.Kmeans <- function(Data,
   Step <- c()
   Penalty <- c()
 
-  maxK <- round(CellNum * 1)
-  K_series <- ceiling(quantile(1:maxK, 0.5))
+  max_k <- max_murp
+  K_series <- ceiling(quantile(1:max_k, 0.5))
   min_k <- round(K_series * 1)
   step <- 0
-
   for (i in 1:iter) {
     cat('Iter',i,'              ',date(),'\n')
 
@@ -43,14 +45,14 @@ MURP.Kmeans <- function(Data,
       min_k <- k[which(BIC == min(BIC))]
     }
 
-    step <- (maxK*1) * 1/2^(i + 1)
+    step <- (max_k*1) * 1/2^(i + 1)
     K_series <- ceiling(c(max(min_k - step, 2),
-                          min(min_k + step,maxK - 1)))
+                          min(min_k + step,max_k - 1)))
     cat('Step:',step,'  k:',min_k,'\n')
     cat(K_series,'\n')
 
     cl <- makeCluster(cores)
-    clusterExport(cl, c("seed", "Data", "K_series"), envir = environment())
+    clusterExport(cl, c("seed", "Data", "K_series","cluster_iter_max"), envir = environment())
     cls <- parLapply(cl, K_series, function(Centers){
       set.seed(seed)
       kmeans(Data, centers = Centers, iter.max = cluster_iter_max)
@@ -108,7 +110,8 @@ MURP.Kmeans <- function(Data,
                    '| iter =',iter,
                    '| fast = ', fast,
                    '| seed = ', seed,
-                   '| cluster_iter_max = ', cluster_iter_max)
+                   '| cluster_iter_max = ', cluster_iter_max,
+                   '| max_murp = ', max_murp)
 
   final <- list(k = k,
                 Step = Step,
@@ -126,6 +129,7 @@ MURP.Kmeans <- function(Data,
   return(final)
 }
 
+
 #' MURP.Kmeans.pca
 #' @importFrom parallel makeCluster stopCluster clusterExport parLapply
 #' @importFrom NPflow mvnpdfC irlba
@@ -142,7 +146,8 @@ MURP.Kmeans.pca <- function(Data,
                             cluster_iter_max = 1000,
                             center = F,
                             scale = F,
-                            pc_number = 30){
+                            pc_number = 30,
+                            max_murp = round(nrow(Data)*0.2)){
 
   cat('Initiating ...        ',date(),'\n')
   CellNum <- dim(Data)[1]
@@ -161,8 +166,8 @@ MURP.Kmeans.pca <- function(Data,
   Step <- c()
   Penalty <- c()
 
-  maxK <- round(CellNum * 1)
-  K_series <- ceiling(quantile(1:maxK, 0.5))
+  max_k <- max_murp
+  K_series <- ceiling(quantile(1:max_k, 0.5))
   min_k <- round(K_series * 1)
   step <- 0
 
@@ -178,14 +183,14 @@ MURP.Kmeans.pca <- function(Data,
       min_k <- k[which(BIC == min(BIC))]
     }
 
-    step <- (maxK*1) * 1/2^(i + 1)
+    step <- (max_k*1) * 1/2^(i + 1)
     K_series <- ceiling(c(max(min_k - step, 2),
-                          min(min_k + step,maxK - 1)))
+                          min(min_k + step,max_k - 1)))
     cat('Step:',step,'  k:',min_k,'\n')
     cat(K_series,'\n')
 
     cl <- makeCluster(cores)
-    clusterExport(cl, c("seed", "Data", "pca_dat", "K_series"), envir = environment())
+    clusterExport(cl, c("seed", "Data", "pca_dat", "K_series", "cluster_iter_max"), envir = environment())
     cls <- parLapply(cl, K_series, function(Centers){
       set.seed(seed)
       tmp = kmeans(pca_dat, centers = Centers, iter.max = cluster_iter_max)
@@ -195,7 +200,7 @@ MURP.Kmeans.pca <- function(Data,
              function(x, y) {
                # Data[x,,drop=F]
                apply(Data[x,,drop=F], 2, mean)
-               }) -> tmplist
+             }) -> tmplist
       centers = do.call(rbind, tmplist)
       return(list(cluster = cluster, centers = centers))
     })
@@ -253,6 +258,7 @@ MURP.Kmeans.pca <- function(Data,
                    '| fast = ', fast,
                    '| seed = ', seed,
                    '| cluster_iter_max = ', cluster_iter_max,
+                   '| max_murp = ', max_murp,
                    '| center =', center,
                    '| scale =', scale,
                    '| pc_number =', pc_number)
